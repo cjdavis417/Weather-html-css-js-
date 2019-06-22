@@ -16,13 +16,19 @@ function getWeather(zip) {
     fetch(requestURL)
         .then(response => response.json())
         .then(function (myJson) {
-            curLoc.innerHTML = zip;
+
+            var data = [];
+            myJson.list.forEach( e => data.push(e));
+            outlook(data);
+
+            curLoc.innerHTML = myJson.city.name + ', ' + myJson.city.country;
             curTime.innerHTML = epochDate(myJson.list[0].dt);
             curTemp.innerHTML = kel2far(myJson.list[0].main.temp);
             curCond.innerHTML = myJson.list[0].weather[0].description;
             curHum.innerHTML = myJson.list[0].main.humidity;
             curWind.innerHTML = myJson.list[0].wind.speed;
             curDirection.innerHTML = compassDir(myJson.list[0].wind.deg);
+
         })
 }
 
@@ -33,11 +39,36 @@ form.addEventListener('submit', function (e) {
     getWeather(zipcode);
 });
 
+function outlook(data) {
+    console.log(data);
+    var outlookTag = document.getElementById('outlook');
+    for (var i = 1; i < data.length; i++) {
+        var listElement = document.createElement("li");
+        var lidiv = document.createElement("div");
+        listElement.appendChild(lidiv);
 
-// converting functions    
+        var h2El = document.createElement("h2");
+        var h2Text = document.createTextNode(kel2far(data[i].main.temp));
+        h2El.appendChild(h2Text);
+        lidiv.appendChild(h2El);
+
+        var h4El = document.createElement("h4");
+        var h4Text = document.createTextNode(data[i].weather[0].description);
+        h4El.appendChild(h4Text);
+        lidiv.appendChild(h4El);
+
+        var listText = document.createTextNode(epochDate(data[i].dt));
+        listElement.appendChild(listText);
+        outlookTag.appendChild(listElement);
+    }
+
+}
+
+
+// converts epoch to regular date   
 function epochDate(epoch) {
-    var d = new Date(0);
-    return Date(epoch);
+    var newdate = new Date(epoch * 1000);
+    return newdate;
 }
 
 // convert K to F
