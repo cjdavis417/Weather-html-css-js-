@@ -47,18 +47,21 @@ function outlook(data) {
         var lidiv = document.createElement("div");
         listElement.appendChild(lidiv);
 
-        var h2El = document.createElement("h2");
-        var h2Text = document.createTextNode(kel2far(data[i].main.temp));
-        h2El.appendChild(h2Text);
-        lidiv.appendChild(h2El);
+        var h3El = document.createElement("h3");
+        var h3Text = document.createTextNode(epochDate(data[i].dt))
+        h3El.appendChild(h3Text);
+        lidiv.appendChild(h3El);
+
+        var h1El = document.createElement("h1");
+        var h1Text = document.createTextNode(kel2far(data[i].main.temp));
+        h1El.appendChild(h1Text);
+        lidiv.appendChild(h1El);
 
         var h4El = document.createElement("h4");
         var h4Text = document.createTextNode(data[i].weather[0].description);
         h4El.appendChild(h4Text);
         lidiv.appendChild(h4El);
 
-        var listText = document.createTextNode(epochDate(data[i].dt));
-        listElement.appendChild(listText);
         outlookTag.appendChild(listElement);
     }
 
@@ -67,8 +70,11 @@ function outlook(data) {
 
 // converts epoch to regular date   
 function epochDate(epoch) {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var newdate = new Date(epoch * 1000);
-    return newdate;
+    var dateString = daysOfWeek[newdate.getDay()] + ", " + months[newdate.getMonth()] + " " + newdate.getUTCDate();
+    return dateString;
 }
 
 // convert K to F
