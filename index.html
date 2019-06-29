@@ -4,7 +4,7 @@
     <head>
         <title>Weather</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link type='text/css' href='/styles/mystyles.css'>
+        <link rel='stylesheet' href='styles/mystyles.css'>
     </head>
     <body>
         <nav class='navbar navbar-expand-lg navbar-dark bg-primary'>
@@ -15,25 +15,23 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <form name='MyLocation' id='MyLocation' method='post' class='form-inline my-2 my-lg-0'>
                         <input type='text' id='myLoc' name='location' placeholder='Enter zip code...' class='form-control mr-sm-2'>
-                        <button id='submit' class='btn btn-outline-light my-2 my-sm-0'>Get Weather</button>
+                        <button id='submit' class='btn btn-outline-light my-2 my-sm-0' value='new'>Get Weather</button>
                     </form>
                 </div>
         </nav>
         
         <div class='container'>
-            <h4><span id='location'></span> Current Conditions</h4>
-            <h5><span id='curCond'></span></h5>
-            <h1><span id='curTemp'></span> &#8457;</h1>
-            <div>Humidity: <span id='curHum'></span>%</div>
-            <div>Wind: <span id='curWind'></span> mph, <span id='curDirection'></span></div>
-            <div><span id='curTime'></span></div>
-            <hr>
+            <h4 class='text-center'><span id='location'></span> Current Conditions</h4>
+            <h5 class='text-center'><span id='curCond'></span></h5>
+            <h1 class='text-center'><span id='curTemp'></span> &#8457;</h1>
+            <div class='text-center'>Humidity: <span id='curHum'></span>%</div>
+            <div class='text-center'>Wind: <span id='curWind'></span> mph, <span id='curDirection'></span></div>
+            <div class='text-center'><span id='curTime'></span></div>
+            <br>
             <div>
-                <div class='nav justify-content-center'>
-                    <h4>5 Day Outlook</h4>
-                    <ul id='outlook'>
-
-                    </ul>
+                <div class='justify-content-center'>
+                    <div id='outlookHeader' class='text-light text-center bg-secondary'>5 Day Outlook</div>
+                    <div id='fiveDays'></div>
                 </div>
             </div>
         </div>

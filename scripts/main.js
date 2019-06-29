@@ -5,11 +5,31 @@ var curTemp = document.getElementById('curTemp');
 var curCond = document.getElementById('curCond');
 var curHum = document.getElementById('curHum');
 var curWind = document.getElementById('curWind');
-var curDirection = document.getElementById('curDirection')
+var curDirection = document.getElementById('curDirection');
+var outlookTag = document.getElementById('outlook');
 
+function checkRefresh(zip) {
+    if (fiveDays.hasChildNodes()) {
+        console.log(outlookTag.children.length);
+        //location.reload();  
+    } 
+}
 
+var form = document.getElementById('MyLocation');
+var submitButton = document.getElementById('submit');
+form.addEventListener('submit', function (e) {
+    console.log("submit value: ", submit.value)
+    if (submit.value == 'new') {
+        e.preventDefault()
+        var zipcode = document.getElementById('myLoc').value;
+        getWeather(zipcode);
+        submit.innerHTML = "Reset"
+        submit.value = "off";
+    }
+});
 
 function getWeather(zip) {
+    checkRefresh(zip);
     const URL = 'https://api.openweathermap.org/data/2.5/forecast'
     var requestURL = URL + '?zip=' + zip + ',us&APPID=6fb8c30fb929a4320dd57f04a61b8837';
 
@@ -22,50 +42,60 @@ function getWeather(zip) {
             outlook(data);
 
             curLoc.innerHTML = myJson.city.name + ', ' + myJson.city.country;
-            curTime.innerHTML = epochDate(myJson.list[0].dt);
-            curTemp.innerHTML = kel2far(myJson.list[0].main.temp);
             curCond.innerHTML = myJson.list[0].weather[0].description;
+            curTemp.innerHTML = kel2far(myJson.list[0].main.temp);
             curHum.innerHTML = myJson.list[0].main.humidity;
             curWind.innerHTML = myJson.list[0].wind.speed;
             curDirection.innerHTML = compassDir(myJson.list[0].wind.deg);
+            curTime.innerHTML = epochDate(myJson.list[0].dt);
 
         })
 }
 
-var form = document.getElementById('MyLocation');
-form.addEventListener('submit', function (e) {
-    e.preventDefault()
-    var zipcode = document.getElementById('myLoc').value;
-    getWeather(zipcode);
-});
-
 function outlook(data) {
-    console.log(data);
-    var outlookTag = document.getElementById('outlook');
+    var outlook = [];
     for (var i = 1; i < data.length; i++) {
-        var listElement = document.createElement("li");
-        var lidiv = document.createElement("div");
-        listElement.appendChild(lidiv);
-
-        var h3El = document.createElement("h3");
-        var h3Text = document.createTextNode(epochDate(data[i].dt))
-        h3El.appendChild(h3Text);
-        lidiv.appendChild(h3El);
-
-        var h1El = document.createElement("h1");
-        var h1Text = document.createTextNode(kel2far(data[i].main.temp));
-        h1El.appendChild(h1Text);
-        lidiv.appendChild(h1El);
-
-        var h4El = document.createElement("h4");
-        var h4Text = document.createTextNode(data[i].weather[0].description);
-        h4El.appendChild(h4Text);
-        lidiv.appendChild(h4El);
-
-        outlookTag.appendChild(listElement);
+        
+        var forcast = new OutlookDay() 
+        forcast.date = data[i].dt,
+        forcast.temp = data[i].main.temp,
+        forcast.description = data[i].weather[0].description;
+        
+        outlook.push(forcast);
     }
+    console.log(outlook);
 
+    var slimOutlook = [];
+    var hours = [];
+    outlook.forEach(function(e) {
+        var date = new Date(e.date * 1000);
+        
+        if (date.getHours() == 14) {
+            slimOutlook.push(e);
+        }
+    })
+
+    var fiveDays = document.getElementById('fiveDays');
+    var slimHTML = [];
+    slimHTML = slimOutlook.map(e => 
+        "<div class='card m-3 p-2 shadow-sm'>" +
+            "<div class='card-body>" +
+                "<h5 class='card-title'>" + epochDate(e.date) + "</h5>" +
+                "<p>" + epochTime(e.date) + "</p>" +
+                "<h6 class='card-subtitle'>" + e.description + "</h6>" +
+                "<h4>High: " + kel2far(e.temp) + "</h4>" +
+            "</div>" +
+        "</div>");
+        var cardString = '';
+    for (var i = 0; i < slimHTML.length; i++) {
+        cardString += slimHTML[i];
+    }
+    fiveDays.innerHTML = cardString;
+
+    
+    console.log("slimHTML: ", slimHTML);
 }
+
 
 
 // converts epoch to regular date   
@@ -75,6 +105,27 @@ function epochDate(epoch) {
     var newdate = new Date(epoch * 1000);
     var dateString = daysOfWeek[newdate.getDay()] + ", " + months[newdate.getMonth()] + " " + newdate.getUTCDate();
     return dateString;
+}
+
+function epochTime(epoch) {
+    var newdate = new Date(epoch * 1000);
+    var hour = 0;
+    var ampm = "am";
+    if (newdate.getHours() > 12) {
+        hour = newdate.getHours() - 12;
+        ampm = "pm";
+    } else {
+        hour = newdate.getHours();
+    }
+    
+    var minute = 0;
+    if (newdate.getMinutes() == 0) {
+        minute = '00';
+    } else {
+        minute = newdate.getMinutes();
+    }
+    var timeString = hour + ":" + minute + ampm;
+    return timeString;
 }
 
 // convert K to F
@@ -119,4 +170,16 @@ function compassDir(degrees) {
     } else {
         return 'N';
     }
+}
+
+class OutlookDay {
+    constructor (outDay, outTemp, outDescription) {
+        var outDay = outDay;
+        var outTemp = outTemp;
+        var outDescription = outDescription;
+    }
+}
+
+function pageState() {
+    location.reload();
 }

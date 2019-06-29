@@ -1,0 +1,20 @@
+var listElement = document.createElement("li");
+        var lidiv = document.createElement("div");
+        listElement.appendChild(lidiv);
+
+        var h3El = document.createElement("h3");
+        var h3Text = document.createTextNode(epochDate(data[i].dt))
+        h3El.appendChild(h3Text);
+        lidiv.appendChild(h3El);
+
+        var h1El = document.createElement("h1");
+        var h1Text = document.createTextNode(kel2far(data[i].main.temp));
+        h1El.appendChild(h1Text);
+        lidiv.appendChild(h1El);
+
+        var h4El = document.createElement("h4");
+        var h4Text = document.createTextNode(data[i].weather[0].description);
+        h4El.appendChild(h4Text);
+        lidiv.appendChild(h4El);
+
+        outlookTag.appendChild(listElement);
