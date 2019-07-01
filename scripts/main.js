@@ -7,13 +7,8 @@ var curHum = document.getElementById('curHum');
 var curWind = document.getElementById('curWind');
 var curDirection = document.getElementById('curDirection');
 var outlookTag = document.getElementById('outlook');
-
-function checkRefresh(zip) {
-    if (fiveDays.hasChildNodes()) {
-        console.log(outlookTag.children.length);
-        //location.reload();  
-    } 
-}
+var sunrise = document.getElementById('sunrise');
+var sunset = document.getElementById('sunset');
 
 var form = document.getElementById('MyLocation');
 var submitButton = document.getElementById('submit');
@@ -23,32 +18,42 @@ form.addEventListener('submit', function (e) {
         e.preventDefault()
         var zipcode = document.getElementById('myLoc').value;
         getWeather(zipcode);
+        getForcast(zipcode);
         submit.innerHTML = "Reset"
         submit.value = "off";
     }
 });
 
 function getWeather(zip) {
-    checkRefresh(zip);
+    const URL = 'https://api.openweathermap.org/data/2.5/weather'
+    var requestURL = URL + '?zip=' + zip + ',us&APPID=6fb8c30fb929a4320dd57f04a61b8837';
+
+    fetch(requestURL)
+        .then(response => response.json())
+        .then(function (myJson) {
+            curLoc.innerHTML = myJson.name + ', ' + myJson.sys.country;
+            curCond.innerHTML = myJson.weather[0].main + ': ' + myJson.weather[0].description + ', ' + myJson.clouds.all + '% cloud cover';
+            curTemp.innerHTML = kel2far(myJson.main.temp);
+            curHum.innerHTML = myJson.main.humidity;
+            curWind.innerHTML = myJson.wind.speed;
+            curDirection.innerHTML = compassDir(myJson.wind.deg);
+            curTime.innerHTML = epochDate(myJson.dt) + ', ' + epochTime(myJson.dt);
+            sunrise.innerHTML = epochTime(myJson.sys.sunrise)
+            sunset.innerHTML = epochTime(myJson.sys.sunset)
+
+        })
+}
+
+function getForcast(zip) {
     const URL = 'https://api.openweathermap.org/data/2.5/forecast'
     var requestURL = URL + '?zip=' + zip + ',us&APPID=6fb8c30fb929a4320dd57f04a61b8837';
 
     fetch(requestURL)
         .then(response => response.json())
         .then(function (myJson) {
-
             var data = [];
             myJson.list.forEach( e => data.push(e));
             outlook(data);
-
-            curLoc.innerHTML = myJson.city.name + ', ' + myJson.city.country;
-            curCond.innerHTML = myJson.list[0].weather[0].description;
-            curTemp.innerHTML = kel2far(myJson.list[0].main.temp);
-            curHum.innerHTML = myJson.list[0].main.humidity;
-            curWind.innerHTML = myJson.list[0].wind.speed;
-            curDirection.innerHTML = compassDir(myJson.list[0].wind.deg);
-            curTime.innerHTML = epochDate(myJson.list[0].dt);
-
         })
 }
 
@@ -121,6 +126,8 @@ function epochTime(epoch) {
     var minute = 0;
     if (newdate.getMinutes() == 0) {
         minute = '00';
+    } else if (newdate.getMinutes() < 10) {
+        minute = '0' + newdate.getMinutes();
     } else {
         minute = newdate.getMinutes();
     }
