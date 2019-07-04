@@ -57,7 +57,7 @@ function tempColor(temp) {
             color = 'red';
             break;
         case (temp >= 80):
-            color = 'scarlet';
+            color = 'chocolate';
             break;
         case (temp >= 70):
             color = 'orange';
@@ -66,13 +66,13 @@ function tempColor(temp) {
             color = 'yellow';
             break;
         case (temp >= 50):
-            color = 'richgreen';
+            color = 'yellowgreen';
             break;
         case (temp >= 40):
             color = 'green';
             break;
         case (temp >= 30):
-            color = 'skyblue';
+            color = 'cyan';
             break;
         case (temp >= 20):
             color = 'blue';
@@ -81,7 +81,7 @@ function tempColor(temp) {
             color = 'purple';
             break;
         case (temp >= 0):
-            color = 'pinkypurple';
+            color = 'blueviolet';
             break;
         case (temp < 0):
             color = 'magenta'
