@@ -2,6 +2,7 @@
 var curLoc = document.getElementById('location');
 var curTime = document.getElementById('curTime');
 var curTemp = document.getElementById('curTemp');
+var curTempColor = document.getElementById('curTempColor');
 var curCond = document.getElementById('curCond');
 var curHum = document.getElementById('curHum');
 var curWind = document.getElementById('curWind');
@@ -31,9 +32,11 @@ function getWeather(zip) {
     fetch(requestURL)
         .then(response => response.json())
         .then(function (myJson) {
+            var temp = kel2far(myJson.main.temp);
             curLoc.innerHTML = myJson.name + ', ' + myJson.sys.country;
             curCond.innerHTML = myJson.weather[0].main + ': ' + myJson.weather[0].description + ', ' + myJson.clouds.all + '% cloud cover';
-            curTemp.innerHTML = kel2far(myJson.main.temp);
+            curTemp.innerHTML = temp;
+            curTempColor.style.color = tempColor(temp);
             curHum.innerHTML = myJson.main.humidity;
             curWind.innerHTML = myJson.wind.speed;
             curDirection.innerHTML = compassDir(myJson.wind.deg);
@@ -42,6 +45,49 @@ function getWeather(zip) {
             sunset.innerHTML = epochTime(myJson.sys.sunset)
 
         })
+}
+
+function tempColor(temp) {
+    var color = '';
+    switch(true) {
+        case (temp >= 100):
+            color = 'darkred';
+            break;
+        case (temp >= 90):
+            color = 'red';
+            break;
+        case (temp >= 80):
+            color = 'scarlet';
+            break;
+        case (temp >= 70):
+            color = 'orange';
+            break;
+        case (temp >= 60):
+            color = 'yellow';
+            break;
+        case (temp >= 50):
+            color = 'richgreen';
+            break;
+        case (temp >= 40):
+            color = 'green';
+            break;
+        case (temp >= 30):
+            color = 'skyblue';
+            break;
+        case (temp >= 20):
+            color = 'blue';
+            break;
+        case (temp >= 10):
+            color = 'purple';
+            break;
+        case (temp >= 0):
+            color = 'pinkypurple';
+            break;
+        case (temp < 0):
+            color = 'magenta'
+            break;
+    }
+    return color;
 }
 
 function getForcast(zip) {
@@ -71,7 +117,6 @@ function outlook(data) {
     console.log(outlook);
 
     var slimOutlook = [];
-    var hours = [];
     outlook.forEach(function(e) {
         var date = new Date(e.date * 1000);
         
@@ -187,6 +232,3 @@ class OutlookDay {
     }
 }
 
-function pageState() {
-    location.reload();
-}
