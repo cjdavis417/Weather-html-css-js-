@@ -9,7 +9,7 @@
 }
 
 #curTempColor {
-    text-shadow: 0 0 5px #000;
+    text-shadow: 0 0 4px #000;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: dimgray;
 }

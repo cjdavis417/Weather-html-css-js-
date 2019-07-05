@@ -34,7 +34,7 @@ function getWeather(zip) {
         .then(function (myJson) {
             var temp = kel2far(myJson.main.temp);
             curLoc.innerHTML = myJson.name + ', ' + myJson.sys.country;
-            curCond.innerHTML = myJson.weather[0].main + ': ' + myJson.weather[0].description + ', ' + myJson.clouds.all + '% cloud cover';
+            curCond.innerHTML = WeatherConditions(myJson.weather)// myJson.weather[0].main + ': ' + myJson.weather[0].description + ', ' + myJson.clouds.all + '% cloud cover';
             curTemp.innerHTML = temp;
             curTempColor.style.color = tempColor(temp);
             curHum.innerHTML = myJson.main.humidity;
@@ -45,6 +45,16 @@ function getWeather(zip) {
             sunset.innerHTML = epochTime(myJson.sys.sunset)
 
         })
+}
+
+function WeatherConditions(weather) {
+    var conditionHTML = weather.map( e => 
+            e.main
+        )
+
+    var conditionString = conditionHTML.join(", ");
+    return "<div>" + conditionString + "</div>";
+
 }
 
 function tempColor(temp) {
